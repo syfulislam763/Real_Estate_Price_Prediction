@@ -4,6 +4,7 @@ import utils
 from contextlib import asynccontextmanager
 from enum import Enum
 from artifacts.dropdown import columns
+from fastapi.middleware.cors import CORSMiddleware
 
 class Locations(BaseModel):
     locations: list[str]
@@ -22,8 +23,15 @@ async def lifespan(app:FastAPI):
     yield
     utils.clear_model()
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, root_path="/api")
 
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 
 @app.get("/")
