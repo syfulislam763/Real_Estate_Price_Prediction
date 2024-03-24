@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  server:
+    container_name: ml_server
+    build: .
+    ports:
+      - 8000:80
+  
+  client:
+    restart: unless-stopped
+    container_name: ml_client
+    build: 
+      context: .
+      dockerfile: client.Dockerfile
+    ports:
+      - 5050:80
+    depends_on:
+      - server

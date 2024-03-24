@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Query, Depends
 from pydantic import BaseModel
-import utils
+from . import utils
 from contextlib import asynccontextmanager
 from enum import Enum
-from artifacts.dropdown import columns
+from .artifacts.dropdown import columns
 from fastapi.middleware.cors import CORSMiddleware
 
 class Locations(BaseModel):
@@ -15,16 +15,15 @@ mp = [(item,item) for item in columns]
 DropDown = Enum("DropDown", dict(mp))
 
 
-    
+
 
 @asynccontextmanager
-async def lifespan(app:FastAPI):
+async def lifespan(app:FastAPI): 
     utils.load_artifacts()
     yield
     utils.clear_model()
 
-app = FastAPI(lifespan=lifespan, root_path="/api")
-
+app = FastAPI(root_path="/api", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,6 +40,7 @@ async def home():
 @app.get("/get_locations", response_model=Locations)
 async def locations():
     return {"locations": utils.get_locations()}
+
 
 
 @app.get("/estimated_price", response_model=Predicted)

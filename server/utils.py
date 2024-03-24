@@ -1,23 +1,27 @@
 import json
 import pickle
 import numpy as np
+import os
+
 
 global __model
 global __location
 global __data_columns
 
-
+BASE_DIR = os.path.dirname(__file__)
+STORAGE_URL = os.path.join(BASE_DIR, "artifacts")
 
 def load_artifacts():
+    print("test-", os.getcwd())
     global __data_columns
     global __location
-    with open("./artifacts/columns.json", "r") as f:
+    with open(f"{STORAGE_URL}/columns.json", "r") as f:
         __data_columns = json.load(f)['data_columns']
 
     __location = __data_columns[3:]
 
     global __model
-    with open("./artifacts/home_prices_model.pickle","rb") as f:
+    with open(f"{STORAGE_URL}/home_prices_model.pickle","rb") as f:
         __model = pickle.load(f)
 
 def get_locations():
